@@ -82,6 +82,7 @@
     .brand-text strong { display: block; font-size: 21px; letter-spacing: -.06em; word-spacing: .08em; }
     .brand-ia { display: inline-block; color: var(--coral); font-size: 1.28em; font-weight: 900; transform: rotate(-25deg); transform-origin: left bottom; margin-left: 5px; letter-spacing: -.04em; }
     .brand-text span { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
+    .brand-text .brand-ia { font-size: 1.28em; font-weight: 900; color: var(--coral); letter-spacing: -.04em; transform: rotate(-25deg); }
     .header-actions { display: flex; align-items: center; gap: 9px; }
     .icon-button, .avatar-button { width: 43px; height: 43px; border-radius: 14px; background: var(--paper); box-shadow: var(--shadow-soft); display: grid; place-items: center; font-size: 18px; }
     .avatar-button { background: var(--ink); color: #fff; font-size: 13px; font-weight: 700; }
@@ -145,6 +146,8 @@
     .upload-orb { width: 63px; height: 63px; border-radius: 22px; background: var(--coral); color: #fff; display: grid; place-items: center; font-size: 28px; margin-bottom: 15px; box-shadow: 0 8px 15px rgba(255,112,77,.2); }
     .dropzone h3 { margin: 0 0 7px; font-size: 20px; letter-spacing: -.04em; }
     .dropzone p { color: var(--muted); font-size: 13px; max-width: 290px; margin: 0 0 17px; line-height: 1.45; }
+    .scan-tips { width: 100%; max-width: 330px; margin: 3px 0 16px; padding: 11px 13px; border-radius: 13px; background: #fff0e5; color: #8f5e50; font-size: 11px; line-height: 1.45; text-align: left; }
+    .scan-tips strong { color: var(--coral-deep); }
     .upload-actions { display: flex; gap: 8px; flex-wrap: wrap; justify-content: center; }
     .outline-btn { background: #fff; border: 1px solid #ecd8cf; border-radius: 12px; padding: 11px 14px; color: #8c5748; font-weight: 700; font-size: 12px; }
     .output-card { border-radius: 24px; padding: 23px; background: var(--ink); color: #fff; min-height: 275px; position: relative; overflow: hidden; }
@@ -170,7 +173,8 @@
     .file-row .delete-file { width: 30px; height: 30px; border-radius: 10px; background: #fff0ea; color: var(--coral-deep); font-size: 15px; flex: 0 0 auto; }
     .progress { width: 75px; height: 6px; border-radius: 99px; background: #f5e9e2; overflow: hidden; flex: 0 0 auto; }
     .progress::after { content: ""; display: block; width: 76%; height: 100%; border-radius: inherit; background: var(--coral); }
-    .translation-grid, .exercise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .translation-grid { display: grid; grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr); gap: 16px; align-items: stretch; }
+    .exercise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .soft-box { background: var(--paper); border-radius: 23px; box-shadow: var(--shadow-soft); padding: 21px; }
     .soft-box.mint-box { background: #effbf7; }
     .soft-box.blue-box { background: #f0f7ff; }
@@ -383,12 +387,12 @@
         <div class="view-intro"><div><div class="panel-kicker">da pagina a mappa mentale</div><h1>Riassunti che<br><em>si ricordano.</em></h1><p>Allega un libro, una foto o i tuoi appunti. scuolaia prova a leggere il testo, estrarre i concetti e trasformarli in un ripasso chiaro.</p></div><button class="primary-btn coral" id="summaryUploadTop">+ Aggiungi materiale</button></div>
         <div class="upload-layout">
           <section class="dropzone" id="dropzone">
-            <div class="upload-orb">↑</div><h3>Porta qui i tuoi appunti</h3><p>Immagini, file di testo o foto. L'OCR legge le immagini quando il motore è disponibile.</p>
+            <div class="upload-orb">↑</div><h3>Porta qui i tuoi appunti</h3><p>Immagini, file di testo o foto. L'OCR legge le immagini quando il motore è disponibile.</p><div class="scan-tips"><strong>Per un testo corretto:</strong> una pagina alla volta, fotocamera parallela al foglio, luce uniforme, niente ombre o dita, pagina intera a fuoco e testo ben visibile.</div>
             <div class="upload-actions"><button class="primary-btn coral" id="chooseFileBtn">Scegli file</button><button class="outline-btn" id="openCameraBtn">◎ Scatta foto</button><button class="outline-btn" id="recordBtn">● Registra voce</button></div>
             <div id="recordingStatus" class="voice-status" aria-live="polite"></div>
             <input id="fileInput" class="hidden" type="file" accept="image/*,.pdf,.txt,.doc,.docx" multiple />
           </section>
-          <section class="output-card"><div class="eyebrow">risultato</div><h3 id="summaryTitle">La Rivoluzione francese</h3><p id="summaryText">Nel 1789 la crisi economica e le disuguaglianze sociali portarono alla fine dell'Ancien Régime. La Rivoluzione introdusse i principi di libertà, uguaglianza e sovranità popolare.</p><div id="summaryDiagram" class="diagram"><span>crisi</span><i>→</i><span>rivolta</span><i>→</i><span>nuovi diritti</span></div><div class="mini-actions"><button class="dark-btn" id="summarySpeak">▶ Ascolta</button><button class="dark-btn" id="diagramBtn">✦ Crea diagramma</button></div></section>
+          <section class="output-card"><div class="eyebrow">risultato</div><h3 id="summaryTitle">La Rivoluzione francese</h3><p id="summaryText">Nel 1789 la crisi economica e le disuguaglianze sociali portarono alla fine dell'Ancien Régime. La Rivoluzione introdusse i principi di libertà, uguaglianza e sovranità popolare.</p><div id="summaryDiagram" class="diagram"><span>crisi</span><i>→</i><span>rivolta</span><i>→</i><span>nuovi diritti</span></div><div class="mini-actions"><button class="dark-btn" id="summarySpeak">▶ Play</button><button class="dark-btn" id="summaryStop">■ Stop</button><button class="dark-btn" id="diagramBtn">✦ Crea diagramma</button></div></section>
         </div>
         <div class="panel file-queue"><div class="panel-head"><div><div class="panel-kicker">i tuoi materiali</div><h2>In lavorazione</h2></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end"><span class="panel-kicker" id="fileCount">2 file</span><button class="outline-btn" id="clearFilesBtn">Cancella tutto</button></div></div><div id="fileList"><div class="file-row" data-id="demo-history"><span class="file-badge">▤</span><span class="file-copy"><strong>capitolo_03_storia.pdf</strong><small>Pronto · testo estratto</small></span><span class="progress"></span><button class="delete-file" aria-label="Cancella capitolo_03_storia.pdf">×</button></div><div class="file-row" data-id="demo-clima"><span class="file-badge">▧</span><span class="file-copy"><strong>appunti_clima.jpg</strong><small>Pronto · OCR completato</small></span><span class="progress"></span><button class="delete-file" aria-label="Cancella appunti_clima.jpg">×</button></div></div></div>
       </section>
@@ -398,7 +402,7 @@
         <div class="translation-grid">
           <section class="soft-box"><div class="box-label"><select id="fromLanguage" class="language-select" aria-label="Lingua di partenza"><option>Italiano</option><option>Inglese</option><option>Francese</option><option>Spagnolo</option></select><span>testo originale</span></div><textarea id="sourceText" placeholder="Scrivi, detta o allega qui il testo da tradurre..."></textarea><div id="translationVoiceStatus" class="voice-status" aria-live="polite"></div><div class="box-actions"><div class="compact-actions"><button class="outline-btn" id="translationChooseBtn">＋ Allega</button><button class="outline-btn" id="translationCameraBtn">◎ Foto</button><button class="outline-btn" id="translationRecordBtn">● Voce</button><input id="translationFileInput" class="hidden" type="file" accept="image/*,.txt,.pdf" /></div><button class="primary-btn soft" id="translateBtn">Traduci →</button></div></section>
           <div class="translation-actions"><button class="swap-btn" id="swapLanguages" title="Inverti lingue">⇄</button></div>
-          <section class="soft-box mint-box"><div class="box-label"><select id="toLanguage" class="language-select" aria-label="Lingua di arrivo"><option>Inglese</option><option>Italiano</option><option>Francese</option><option>Spagnolo</option></select><span>traduzione</span></div><textarea id="translatedText" placeholder="Qui apparirà una traduzione naturale e chiara..." readonly></textarea><button class="primary-btn" id="listenTranslation">▶ Ascolta</button></section>
+          <section class="soft-box mint-box"><div class="box-label"><select id="toLanguage" class="language-select" aria-label="Lingua di arrivo"><option>Inglese</option><option>Italiano</option><option>Francese</option><option>Spagnolo</option></select><span>traduzione</span></div><textarea id="translatedText" placeholder="Qui apparirà una traduzione naturale e chiara..." readonly></textarea><div class="mini-actions"><button class="primary-btn" id="listenTranslation">▶ Play</button><button class="outline-btn" id="stopTranslation">■ Stop</button></div></section>
         </div>
         <div class="panel" style="margin-top:22px"><div class="panel-head"><div><div class="panel-kicker">parola del giorno</div><h2>Piccoli passi, ogni giorno</h2><p class="sub">Puoi chiedere anche: “perché qui si usa questa parola?”</p></div><span style="font-size:28px">🌱</span></div></div>
       </section>
@@ -672,7 +676,7 @@
       function fileBadge(file) { return file.type.startsWith('image/') ? '▧' : (file.type === 'application/pdf' ? '▤' : '▱'); }
       function removeFile(id, message = 'Materiale cancellato') {
         const row = fileList.querySelector(`[data-id="${id}"]`); if (row) row.remove();
-        setFileCount(); showToast(message); softClick();
+        setFileCount(); refreshSummaryFromFiles(); showToast(message); softClick();
       }
       function makeFileRow(file) {
         const id = 'file-' + (++fileIdCounter);
@@ -696,6 +700,9 @@
         const chosen = sentences.slice(0, Math.min(4, sentences.length)).join(' ');
         return { summary: chosen.length > 620 ? chosen.slice(0, 617) + '…' : chosen, keywords: commonWords(clean) };
       }
+      function normalizeOcrText(text) {
+        return text.replace(/-\s*\n(?=\p{L})/gu, '').replace(/[ \t]+\n/g, '\n').split('\n').map(line => line.trim()).filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+      }
       function showSummary(title, text) {
         const result = summarizeText(text);
         $('#summaryTitle').textContent = title.replace(/\.[^.]+$/, '');
@@ -704,28 +711,47 @@
         $('#summaryDiagram').innerHTML = words.map((word, index) => `<span>${word}</span>${index < words.length - 1 ? '<i>→</i>' : ''}`).join('');
         $('#summarySpeak').dataset.speak = result.summary;
       }
+      function refreshSummaryFromFiles() {
+        const texts = $$('#fileList .file-row').map(row => row._ocrText).filter(Boolean);
+        if (texts.length) showSummary(texts.length === 1 ? 'Pagina letta' : texts.length + ' pagine lette', texts.join(' '));
+      }
       function finishText(row, fileName, text, target, statusElement) {
-        if (target) { target.value = text.trim(); if (statusElement) statusElement.textContent = 'Testo estratto e pronto'; showToast('Testo letto e inserito'); return; }
-        const result = summarizeText(text);
+        const cleanText = normalizeOcrText(text);
+        if (target) { target.value = cleanText; if (statusElement) statusElement.textContent = 'Testo estratto e pronto'; showToast('Testo letto e inserito'); return; }
+        if (row) row._ocrText = cleanText;
+        const result = summarizeText(cleanText);
         setStatus(row, result.summary === 'Non ho trovato testo leggibile.' ? 'Nessun testo leggibile' : 'Pronto · testo letto e riassunto');
-        row.querySelector('.progress').style.opacity = '.45'; showSummary(fileName, text); showToast('Testo letto e riassunto');
+        if (row && row.querySelector('.progress')) row.querySelector('.progress').style.opacity = '.45';
+        refreshSummaryFromFiles(); showToast('Testo letto e riassunto');
+      }
+      async function preprocessImage(file) {
+        try {
+          const url = URL.createObjectURL(file); const image = await new Promise((resolve, reject) => { const element = new Image(); element.onload = () => resolve(element); element.onerror = reject; element.src = url; }); URL.revokeObjectURL(url);
+          const targetWidth = Math.min(3200, Math.max(2400, image.naturalWidth * 1.8)); const scale = targetWidth / image.naturalWidth;
+          const canvas = document.createElement('canvas'); canvas.width = Math.round(image.naturalWidth * scale); canvas.height = Math.round(image.naturalHeight * scale);
+          const context = canvas.getContext('2d', {willReadFrequently: true}); context.fillStyle = '#fff'; context.fillRect(0, 0, canvas.width, canvas.height); context.filter = 'grayscale(1) contrast(1.35) brightness(1.04)'; context.drawImage(image, 0, 0, canvas.width, canvas.height);
+          return await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', .94));
+        } catch (error) { return file; }
       }
       async function processImage(file, row = null, target = null, statusElement = null) {
         if (!window.Tesseract) { setStatus(row, 'OCR non disponibile: serve connessione'); if (statusElement) statusElement.textContent = 'OCR non disponibile: controlla la connessione'; showToast('Per leggere immagini serve il motore OCR online'); return; }
-        setStatus(row, 'OCR in corso…'); if (statusElement) statusElement.textContent = 'Lettura della foto in corso…';
+        setStatus(row, 'Ottimizzazione foto…'); if (statusElement) statusElement.textContent = 'Ottimizzo la foto e leggo il testo…';
         try {
-          const result = await Tesseract.recognize(file, 'ita+eng', { logger: info => { if (info.status === 'recognizing text' && row) setStatus(row, 'OCR ' + Math.round((info.progress || 0) * 100) + '%…'); } });
+          const enhanced = await preprocessImage(file);
+          const options = { logger: info => { if (info.status === 'recognizing text' && row) setStatus(row, 'OCR ' + Math.round((info.progress || 0) * 100) + '%…'); }, config: { tessedit_pageseg_mode: '3', preserve_interword_spaces: '1' } };
+          let result = await Tesseract.recognize(enhanced, 'ita+eng', options);
+          if ((result.data.confidence || 0) < 45 && enhanced !== file) result = await Tesseract.recognize(file, 'ita+eng', options);
           const text = (result.data.text || '').trim();
           if (!text) { setStatus(row, 'Foto senza testo leggibile'); if (statusElement) statusElement.textContent = 'Non ho trovato testo nella foto'; showToast('Non ho trovato testo leggibile'); return; }
           finishText(row, file.name, text, target, statusElement);
-        } catch (error) { setStatus(row, 'OCR non riuscito'); if (statusElement) statusElement.textContent = 'OCR non riuscito: prova con una foto più nitida'; showToast('Prova con una foto più nitida'); }
+        } catch (error) { setStatus(row, 'OCR non riuscito'); if (statusElement) statusElement.textContent = 'OCR non riuscito: prova con una foto più nitida e parallela'; showToast('Prova con una foto più nitida'); }
       }
       async function processPdf(file, row = null, target = null, statusElement = null) {
         if (!window.pdfjsLib) { setStatus(row, 'Lettore PDF non disponibile: serve connessione'); if (statusElement) statusElement.textContent = 'Lettore PDF non disponibile'; return; }
         setStatus(row, 'Lettura PDF in corso…'); if (statusElement) statusElement.textContent = 'Lettura del PDF in corso…';
         try {
           const data = await file.arrayBuffer(); const pdf = await window.pdfjsLib.getDocument({data}).promise; let text = '';
-          for (let pageNumber = 1; pageNumber <= Math.min(pdf.numPages, 20); pageNumber++) { const page = await pdf.getPage(pageNumber); const content = await page.getTextContent(); text += content.items.map(item => item.str).join(' ') + '\\n'; }
+          for (let pageNumber = 1; pageNumber <= Math.min(pdf.numPages, 20); pageNumber++) { const page = await pdf.getPage(pageNumber); const content = await page.getTextContent(); text += content.items.map(item => item.str).join(' ') + '\n'; }
           finishText(row, file.name, text, target, statusElement);
         } catch (error) { setStatus(row, 'PDF non leggibile'); if (statusElement) statusElement.textContent = 'PDF non leggibile'; showToast('Prova con un PDF più semplice o una foto'); }
       }
@@ -748,7 +774,7 @@
       $('#chooseFileBtn').addEventListener('click', () => fileInput.click()); $('#summaryUploadTop').addEventListener('click', () => fileInput.click()); fileInput.addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
       ['dragenter','dragover'].forEach(type => dropzone.addEventListener(type, e => { e.preventDefault(); dropzone.classList.add('dragover'); }));
       ['dragleave','drop'].forEach(type => dropzone.addEventListener(type, e => { e.preventDefault(); dropzone.classList.remove('dragover'); })); dropzone.addEventListener('drop', e => addFiles(e.dataTransfer.files));
-      $('#diagramBtn').addEventListener('click', () => showToast('Diagramma aggiornato con i concetti chiave')); $('#summarySpeak').addEventListener('click', () => speak($('#summarySpeak').dataset.speak || $('#summaryText').textContent));
+      $('#diagramBtn').addEventListener('click', () => showToast('Diagramma aggiornato con i concetti chiave')); $('#summarySpeak').addEventListener('click', () => toggleSpeech($('#summarySpeak').dataset.speak || $('#summaryText').textContent, $('#summarySpeak'))); $('#summaryStop').addEventListener('click', () => stopSpeech());
 
       // Fotocamera: la stessa funzione alimenta riassunti, traduzioni ed esercizi.
       const cameraModal = $('#cameraModal'); const video = $('#cameraVideo');
@@ -778,7 +804,7 @@
         $('#translatedText').value = translated; showToast('Traduzione pronta');
       });
       $('#swapLanguages').addEventListener('click', () => { const from = $('#fromLanguage'), to = $('#toLanguage'); const tmp = from.value; from.value = to.value; to.value = tmp; softClick(); });
-      $('#listenTranslation').addEventListener('click', () => speak($('#translatedText').value || 'La traduzione apparirà qui.'));
+      $('#listenTranslation').addEventListener('click', () => toggleSpeech($('#translatedText').value || 'La traduzione apparirà qui.', $('#listenTranslation'))); $('#stopTranslation').addEventListener('click', () => stopSpeech());
 
       // Esercizi: allegato, foto, dettatura e spiegazione locale di equazioni semplici.
       $('#exerciseChooseBtn').addEventListener('click', () => $('#exerciseFileInput').click());
@@ -817,9 +843,23 @@
         speechRecognition.onend = () => { if (activeRecordButton === button) { button.textContent = '● Voce'; status.textContent = sessionText ? 'Registrazione terminata' : ''; speechRecognition = null; activeRecordButton = null; activeRecordStatus = null; } };
         try { speechRecognition.start(); } catch (error) { speechRecognition = null; status.textContent = 'Impossibile avviare il microfono'; }
       }
-      function speak(text) {
+      let activeSpeechButton = null;
+      function stopSpeech() {
+        if ('speechSynthesis' in window) speechSynthesis.cancel();
+        if (activeSpeechButton) activeSpeechButton.textContent = '▶ Play';
+        activeSpeechButton = null;
+      }
+      function toggleSpeech(text, button) {
         if (!voiceOn || !('speechSynthesis' in window)) { showToast(voiceOn ? 'La lettura vocale non è disponibile qui' : 'Lettura vocale disattivata'); return; }
-        speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'it-IT'; utterance.rate = .94; utterance.volume = voiceVolume; speechSynthesis.speak(utterance);
+        if (activeSpeechButton === button && speechSynthesis.speaking) {
+          if (speechSynthesis.paused) { speechSynthesis.resume(); button.textContent = '⏸ Pausa'; }
+          else { speechSynthesis.pause(); button.textContent = '▶ Riprendi'; }
+          return;
+        }
+        stopSpeech(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'it-IT'; utterance.rate = .94; utterance.volume = voiceVolume; activeSpeechButton = button; button.textContent = '⏸ Pausa';
+        utterance.onend = () => { if (activeSpeechButton === button) { button.textContent = '▶ Play'; activeSpeechButton = null; } };
+        utterance.onerror = () => { if (activeSpeechButton === button) { button.textContent = '▶ Play'; activeSpeechButton = null; } };
+        speechSynthesis.speak(utterance);
       }
       $('#voiceVolume').addEventListener('input', event => setVoiceVolume(event.target.value));
       $('#summarySpeak').dataset.speak = $('#summaryText').textContent;

@@ -76,7 +76,7 @@ Il sito deve essere pubblicato in HTTPS perché manifest e service worker funzio
 
 ## Da collegare per il prodotto reale
 
-1. OCR per immagini/PDF e gestione di orientamento, ritaglio e qualità della foto.
+1. OCR più avanzato per immagini/PDF: il prototipo esegue già ingrandimento, contrasto, scala di grigi, lettura PDF e riassunto locale; la qualità dipende dalla foto.
 2. Backend AI con prompt separati per riassunto, mappa/diagramma, traduzione, esercizi e ricerca.
 3. Ricerca web con fonti e citazioni.
 4. Account, cronologia, cancellazione dati e crittografia.
