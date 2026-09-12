@@ -724,26 +724,33 @@
         if (row && row.querySelector('.progress')) row.querySelector('.progress').style.opacity = '.45';
         refreshSummaryFromFiles(); showToast('Testo letto e riassunto');
       }
-      async function preprocessImage(file) {
+      async function preprocessImage(file, mode = 'clean') {
         try {
           const url = URL.createObjectURL(file); const image = await new Promise((resolve, reject) => { const element = new Image(); element.onload = () => resolve(element); element.onerror = reject; element.src = url; }); URL.revokeObjectURL(url);
-          const targetWidth = Math.min(3200, Math.max(2400, image.naturalWidth * 1.8)); const scale = targetWidth / image.naturalWidth;
-          const canvas = document.createElement('canvas'); canvas.width = Math.round(image.naturalWidth * scale); canvas.height = Math.round(image.naturalHeight * scale);
-          const context = canvas.getContext('2d', {willReadFrequently: true}); context.fillStyle = '#fff'; context.fillRect(0, 0, canvas.width, canvas.height); context.filter = 'grayscale(1) contrast(1.35) brightness(1.04)'; context.drawImage(image, 0, 0, canvas.width, canvas.height);
-          return await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', .94));
+          const targetWidth = Math.min(2600, Math.max(2000, image.naturalWidth * 1.6)); const scale = targetWidth / image.naturalWidth;
+          const cropX = Math.round(image.naturalWidth * .025); const cropY = Math.round(image.naturalHeight * .02); const cropW = image.naturalWidth - cropX * 2; const cropH = image.naturalHeight - cropY * 2;
+          const canvas = document.createElement('canvas'); canvas.width = Math.round(cropW * scale); canvas.height = Math.round(cropH * scale);
+          const context = canvas.getContext('2d', {willReadFrequently: true}); context.fillStyle = '#fff'; context.fillRect(0, 0, canvas.width, canvas.height); context.filter = 'grayscale(1) contrast(1.45) brightness(1.06)'; context.drawImage(image, cropX, cropY, cropW, cropH, 0, 0, canvas.width, canvas.height); context.filter = 'none';
+          if (mode === 'binary') { const pixels = context.getImageData(0, 0, canvas.width, canvas.height); for (let i = 0; i < pixels.data.length; i += 4) { const value = pixels.data[i] > 178 ? 255 : 28; pixels.data[i] = value; pixels.data[i + 1] = value; pixels.data[i + 2] = value; pixels.data[i + 3] = 255; } context.putImageData(pixels, 0, 0); }
+          return await new Promise(resolve => canvas.toBlob(resolve, 'image/jpeg', .95));
         } catch (error) { return file; }
+      }
+      function ocrQuality(text, confidence) {
+        const normalized = text || ''; const words = normalized.split(/\s+/).filter(Boolean); const goodWords = words.filter(word => /[a-zàèéìòù]{2,}/i.test(word)); const odd = (normalized.match(/[^a-zàèéìòù0-9\s.,;:!?()'"%\-]/gi) || []).length; const ratio = normalized.length ? odd / normalized.length : 1;
+        return (confidence || 0) + Math.min(18, goodWords.length / 5) - ratio * 60;
       }
       async function processImage(file, row = null, target = null, statusElement = null) {
         if (!window.Tesseract) { setStatus(row, 'OCR non disponibile: serve connessione'); if (statusElement) statusElement.textContent = 'OCR non disponibile: controlla la connessione'; showToast('Per leggere immagini serve il motore OCR online'); return; }
         setStatus(row, 'Ottimizzazione foto…'); if (statusElement) statusElement.textContent = 'Ottimizzo la foto e leggo il testo…';
         try {
-          const enhanced = await preprocessImage(file);
-          const options = { logger: info => { if (info.status === 'recognizing text' && row) setStatus(row, 'OCR ' + Math.round((info.progress || 0) * 100) + '%…'); }, config: { tessedit_pageseg_mode: '3', preserve_interword_spaces: '1' } };
-          let result = await Tesseract.recognize(enhanced, 'ita+eng', options);
-          if ((result.data.confidence || 0) < 45 && enhanced !== file) result = await Tesseract.recognize(file, 'ita+eng', options);
-          const text = (result.data.text || '').trim();
-          if (!text) { setStatus(row, 'Foto senza testo leggibile'); if (statusElement) statusElement.textContent = 'Non ho trovato testo nella foto'; showToast('Non ho trovato testo leggibile'); return; }
-          finishText(row, file.name, text, target, statusElement);
+          const variants = [await preprocessImage(file, 'clean'), await preprocessImage(file, 'binary')]; const results = [];
+          for (const variant of variants) {
+            const options = { logger: info => { if (info.status === 'recognizing text' && row) setStatus(row, 'OCR ' + Math.round((info.progress || 0) * 100) + '%…'); }, config: { tessedit_pageseg_mode: '3', preserve_interword_spaces: '0' } };
+            const result = await Tesseract.recognize(variant, 'ita', options); const text = normalizeOcrText(result.data.text || ''); results.push({text, confidence: result.data.confidence || 0, score: ocrQuality(text, result.data.confidence || 0)});
+          }
+          results.sort((a, b) => b.score - a.score); const best = results[0];
+          if (!best.text || best.text.length < 24 || best.score < 35) { setStatus(row, 'Foto poco leggibile'); if (statusElement) statusElement.textContent = 'Foto poco leggibile: rifotografa una pagina alla volta'; showToast('Rifotografa la pagina più dritta e luminosa'); return; }
+          finishText(row, file.name, best.text, target, statusElement);
         } catch (error) { setStatus(row, 'OCR non riuscito'); if (statusElement) statusElement.textContent = 'OCR non riuscito: prova con una foto più nitida e parallela'; showToast('Prova con una foto più nitida'); }
       }
       async function processPdf(file, row = null, target = null, statusElement = null) {
