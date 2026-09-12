@@ -9,10 +9,11 @@ Prototipo front-end statico installabile come web app. Il file principale è `in
 - codice di ingresso da entrambe le modalità: `##**`;
 - ritorno alla calcolatrice dall'icona in alto o dalle impostazioni;
 - home con richiesta libera;
-- riassunti, traduzioni ed esercizi in modalità demo;
-- caricamento file, drag and drop e fotocamera;
-- lettura vocale del testo;
-- suoni morbidi attivabili e disattivabili;
+- riassunti locali da file di testo e OCR locale per immagini quando il motore OCR online è disponibile;
+- caricamento file, drag and drop, cancellazione dei materiali e fotocamera;
+- allegati, foto e dettatura anche in traduzioni ed esercizi;
+- lettura vocale del testo con volume regolabile;
+- suoni morbidi sui pulsanti, attivabili e disattivabili;
 - icona calcolatrice per l'installazione sul telefono;
 - funzionamento offline dopo il primo caricamento grazie al service worker.
 

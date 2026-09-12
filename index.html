@@ -2,11 +2,12 @@
 <html lang="it">
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
   <meta name="theme-color" content="#ff704d" />
   <meta name="mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-capable" content="yes" />
   <meta name="apple-mobile-web-app-title" content="Calcolatrice" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
   <link rel="manifest" href="./manifest.webmanifest" />
   <link rel="apple-touch-icon" href="./apple-touch-icon.png" />
   <title>Calcolatrice</title>
@@ -31,15 +32,15 @@
       --font: ui-rounded, "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
     }
     * { box-sizing: border-box; }
-    html { min-height: 100%; background: var(--cream); }
-    body { margin: 0; min-height: 100vh; color: var(--ink); background: var(--cream); font-family: var(--font); letter-spacing: -.01em; }
+    html { min-height: 100%; background: var(--cream); -webkit-text-size-adjust: 100%; }
+    body { margin: 0; min-height: 100vh; min-height: 100dvh; color: var(--ink); background: var(--cream); font-family: var(--font); letter-spacing: -.01em; overflow-x: hidden; overscroll-behavior: none; }
     button, input, textarea, select { font: inherit; }
-    button { border: 0; cursor: pointer; color: inherit; }
+    button { border: 0; cursor: pointer; color: inherit; touch-action: manipulation; -webkit-tap-highlight-color: transparent; user-select: none; }
     .hidden { display: none !important; }
     .screen { min-height: 100vh; }
 
     /* Calculator camouflage */
-    #calculatorScreen { display: grid; place-items: center; padding: 28px 18px; background: radial-gradient(circle at 20% 0%, #fffefd 0 8%, transparent 35%), var(--cream); }
+    #calculatorScreen { display: grid; place-items: center; min-height: 100dvh; padding: 28px 18px; background: radial-gradient(circle at 20% 0%, #fffefd 0 8%, transparent 35%), var(--cream); overflow-y: auto; overscroll-behavior: contain; }
     .calculator-wrap { width: min(100%, 420px); }
     .calculator-top { display: flex; justify-content: space-between; align-items: center; gap: 10px; color: #958d8b; font-size: 12px; letter-spacing: .14em; text-transform: uppercase; margin-bottom: 12px; padding: 0 5px; }
     .calc-status { display: inline-flex; align-items: center; gap: 7px; }
@@ -78,8 +79,8 @@
     .brand { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; color: var(--ink); }
     .brand-mark { width: 42px; height: 42px; border-radius: 14px; background: var(--coral); color: #fff; display: grid; place-items: center; font-weight: 800; font-size: 20px; transform: rotate(-7deg); box-shadow: 0 8px 16px rgba(255,112,77,.25); }
     .brand-text { line-height: 1; }
-    .brand-text strong { display: block; font-size: 21px; letter-spacing: -.07em; }
-    .brand-ia { display: inline-block; color: var(--coral); transform: rotate(-25deg); transform-origin: left bottom; margin-left: 1px; }
+    .brand-text strong { display: block; font-size: 21px; letter-spacing: -.06em; word-spacing: .08em; }
+    .brand-ia { display: inline-block; color: var(--coral); font-size: 1.28em; font-weight: 900; transform: rotate(-25deg); transform-origin: left bottom; margin-left: 5px; letter-spacing: -.04em; }
     .brand-text span { font-size: 10px; color: var(--muted); letter-spacing: .1em; text-transform: uppercase; font-weight: 700; }
     .header-actions { display: flex; align-items: center; gap: 9px; }
     .icon-button, .avatar-button { width: 43px; height: 43px; border-radius: 14px; background: var(--paper); box-shadow: var(--shadow-soft); display: grid; place-items: center; font-size: 18px; }
@@ -156,13 +157,18 @@
     .diagram { display: flex; align-items: center; gap: 5px; margin-top: 20px; color: #fff; font-size: 11px; }
     .diagram span { padding: 8px 9px; border: 1px solid rgba(255,255,255,.2); border-radius: 9px; background: rgba(255,255,255,.08); }
     .diagram i { color: var(--yellow); font-style: normal; }
+    .box-actions { display: flex; justify-content: space-between; align-items: center; gap: 10px; flex-wrap: wrap; margin-top: 12px; }
+    .compact-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+    .compact-actions .outline-btn { padding: 9px 10px; font-size: 11px; }
+    .voice-status { min-height: 18px; color: var(--coral-deep); font-size: 11px; margin-top: 8px; }
     .file-queue { margin-top: 22px; }
     .file-row { display: flex; align-items: center; gap: 12px; border-top: 1px solid var(--line); padding: 13px 0; }
     .file-badge { width: 36px; height: 36px; border-radius: 11px; display: grid; place-items: center; background: var(--peach); color: var(--coral-deep); font-size: 17px; }
     .file-row .file-copy { flex: 1; min-width: 0; }
     .file-row strong { display: block; font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
     .file-row small { display: block; color: var(--muted); margin-top: 3px; font-size: 11px; }
-    .progress { width: 75px; height: 6px; border-radius: 99px; background: #f5e9e2; overflow: hidden; }
+    .file-row .delete-file { width: 30px; height: 30px; border-radius: 10px; background: #fff0ea; color: var(--coral-deep); font-size: 15px; flex: 0 0 auto; }
+    .progress { width: 75px; height: 6px; border-radius: 99px; background: #f5e9e2; overflow: hidden; flex: 0 0 auto; }
     .progress::after { content: ""; display: block; width: 76%; height: 100%; border-radius: inherit; background: var(--coral); }
     .translation-grid, .exercise-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
     .soft-box { background: var(--paper); border-radius: 23px; box-shadow: var(--shadow-soft); padding: 21px; }
@@ -191,6 +197,10 @@
     .setting-row:last-child { border-bottom: 0; padding-bottom: 3px; }
     .setting-row strong { font-size: 14px; display: block; }
     .setting-row p { color: var(--muted); font-size: 12px; margin: 4px 0 0; line-height: 1.35; }
+    .volume-row { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding-top: 15px; border-top: 1px solid var(--line); }
+    .volume-row label { color: var(--muted); font-size: 12px; font-weight: 700; min-width: 88px; }
+    .volume-row input { width: 100%; accent-color: var(--coral); }
+    .volume-row output { color: var(--coral-deep); font-size: 12px; font-weight: 800; min-width: 36px; text-align: right; }
     .toggle { width: 47px; height: 27px; padding: 3px; border-radius: 99px; background: #ddd4cf; flex: 0 0 auto; transition: background .2s; }
     .toggle::after { content: ""; display: block; width: 21px; height: 21px; border-radius: 50%; background: white; box-shadow: 0 2px 4px rgba(0,0,0,.16); transition: transform .2s; }
     .toggle.on { background: var(--coral); }
@@ -228,6 +238,7 @@
       .tool-card { min-height: 92px; }
       .view-intro { display: block; }
       .view-intro .primary-btn { margin-top: 16px; }
+      #calculatorScreen { padding: 14px 10px; }
       .calculator { border-radius: 27px; padding: 13px; }
       .calc-key { min-height: 57px; border-radius: 16px; }
       .scientific-panel .calc-key { min-height: 42px; border-radius: 12px; font-size: 11px; }
@@ -310,7 +321,7 @@
       <header class="app-header">
         <a class="brand" href="#home" aria-label="scuolaia home">
           <span class="brand-mark">s</span>
-          <span class="brand-text"><strong>scuola<span class="brand-ia">ia</span></strong><span>capire. creare. ricordare.</span></span>
+          <span class="brand-text"><strong>scuola <span class="brand-ia">ia</span></strong><span>capire. creare. ricordare.</span></span>
         </a>
         <div class="header-actions">
           <button class="icon-button" id="returnCalcBtn" title="Torna alla calcolatrice" aria-label="Torna alla calcolatrice">▦</button>
@@ -369,22 +380,23 @@
       </section>
 
       <section id="summaries" class="view">
-        <div class="view-intro"><div><div class="panel-kicker">da pagina a mappa mentale</div><h1>Riassunti che<br><em>si ricordano.</em></h1><p>Allega un libro, una foto o i tuoi appunti. scuolaia estrae il testo, trova i concetti importanti e li rende più facili da ripassare.</p></div><button class="primary-btn coral" id="summaryUploadTop">+ Aggiungi materiale</button></div>
+        <div class="view-intro"><div><div class="panel-kicker">da pagina a mappa mentale</div><h1>Riassunti che<br><em>si ricordano.</em></h1><p>Allega un libro, una foto o i tuoi appunti. scuolaia prova a leggere il testo, estrarre i concetti e trasformarli in un ripasso chiaro.</p></div><button class="primary-btn coral" id="summaryUploadTop">+ Aggiungi materiale</button></div>
         <div class="upload-layout">
           <section class="dropzone" id="dropzone">
-            <div class="upload-orb">↑</div><h3>Porta qui i tuoi appunti</h3><p>PDF, immagini o file di testo. Puoi anche scattare direttamente una foto alla pagina.</p>
-            <div class="upload-actions"><button class="primary-btn coral" id="chooseFileBtn">Scegli file</button><button class="outline-btn" id="openCameraBtn">◎ Scatta foto</button></div>
+            <div class="upload-orb">↑</div><h3>Porta qui i tuoi appunti</h3><p>Immagini, file di testo o foto. L'OCR legge le immagini quando il motore è disponibile.</p>
+            <div class="upload-actions"><button class="primary-btn coral" id="chooseFileBtn">Scegli file</button><button class="outline-btn" id="openCameraBtn">◎ Scatta foto</button><button class="outline-btn" id="recordBtn">● Registra voce</button></div>
+            <div id="recordingStatus" class="voice-status" aria-live="polite"></div>
             <input id="fileInput" class="hidden" type="file" accept="image/*,.pdf,.txt,.doc,.docx" multiple />
           </section>
-          <section class="output-card"><div class="eyebrow">anteprima del risultato</div><h3>La Rivoluzione francese</h3><p>Nel 1789 la crisi economica e le disuguaglianze sociali portarono alla fine dell'Ancien Régime. La Rivoluzione introdusse i principi di libertà, uguaglianza e sovranità popolare.</p><div class="diagram"><span>crisi</span><i>→</i><span>rivolta</span><i>→</i><span>nuovi diritti</span></div><div class="mini-actions"><button class="dark-btn speak-btn" data-speak="Nel 1789 la crisi economica e le disuguaglianze sociali portarono alla fine dell'Ancien Régime. La Rivoluzione introdusse i principi di libertà, uguaglianza e sovranità popolare.">▶ Ascolta</button><button class="dark-btn" id="diagramBtn">✦ Crea diagramma</button></div></section>
+          <section class="output-card"><div class="eyebrow">risultato</div><h3 id="summaryTitle">La Rivoluzione francese</h3><p id="summaryText">Nel 1789 la crisi economica e le disuguaglianze sociali portarono alla fine dell'Ancien Régime. La Rivoluzione introdusse i principi di libertà, uguaglianza e sovranità popolare.</p><div id="summaryDiagram" class="diagram"><span>crisi</span><i>→</i><span>rivolta</span><i>→</i><span>nuovi diritti</span></div><div class="mini-actions"><button class="dark-btn" id="summarySpeak">▶ Ascolta</button><button class="dark-btn" id="diagramBtn">✦ Crea diagramma</button></div></section>
         </div>
-        <div class="panel file-queue"><div class="panel-head"><div><div class="panel-kicker">i tuoi materiali</div><h2>In lavorazione</h2></div><span class="panel-kicker" id="fileCount">2 file</span></div><div id="fileList"><div class="file-row"><span class="file-badge">▤</span><span class="file-copy"><strong>capitolo_03_storia.pdf</strong><small>Pronto · testo estratto</small></span><span class="progress"></span></div><div class="file-row"><span class="file-badge">▧</span><span class="file-copy"><strong>appunti_clima.jpg</strong><small>Pronto · OCR completato</small></span><span class="progress"></span></div></div></div>
+        <div class="panel file-queue"><div class="panel-head"><div><div class="panel-kicker">i tuoi materiali</div><h2>In lavorazione</h2></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end"><span class="panel-kicker" id="fileCount">2 file</span><button class="outline-btn" id="clearFilesBtn">Cancella tutto</button></div></div><div id="fileList"><div class="file-row" data-id="demo-history"><span class="file-badge">▤</span><span class="file-copy"><strong>capitolo_03_storia.pdf</strong><small>Pronto · testo estratto</small></span><span class="progress"></span><button class="delete-file" aria-label="Cancella capitolo_03_storia.pdf">×</button></div><div class="file-row" data-id="demo-clima"><span class="file-badge">▧</span><span class="file-copy"><strong>appunti_clima.jpg</strong><small>Pronto · OCR completato</small></span><span class="progress"></span><button class="delete-file" aria-label="Cancella appunti_clima.jpg">×</button></div></div></div>
       </section>
 
       <section id="translations" class="view">
-        <div class="view-intro"><div><div class="panel-kicker">parole che viaggiano</div><h1>Traduci senza<br><em>perdere il senso.</em></h1><p>Scrivi, incolla o carica una pagina. Scegli la lingua e confronta testo originale e traduzione con un tocco.</p></div></div>
+        <div class="view-intro"><div><div class="panel-kicker">parole che viaggiano</div><h1>Traduci senza<br><em>perdere il senso.</em></h1><p>Scrivi, incolla, registra la tua voce oppure allega una pagina da leggere e tradurre.</p></div></div>
         <div class="translation-grid">
-          <section class="soft-box"><div class="box-label"><select id="fromLanguage" class="language-select" aria-label="Lingua di partenza"><option>Italiano</option><option>Inglese</option><option>Francese</option><option>Spagnolo</option></select><span>testo originale</span></div><textarea id="sourceText" placeholder="Scrivi o incolla qui il testo da tradurre..."></textarea><button class="primary-btn soft" id="translateBtn">Traduci →</button></section>
+          <section class="soft-box"><div class="box-label"><select id="fromLanguage" class="language-select" aria-label="Lingua di partenza"><option>Italiano</option><option>Inglese</option><option>Francese</option><option>Spagnolo</option></select><span>testo originale</span></div><textarea id="sourceText" placeholder="Scrivi, detta o allega qui il testo da tradurre..."></textarea><div id="translationVoiceStatus" class="voice-status" aria-live="polite"></div><div class="box-actions"><div class="compact-actions"><button class="outline-btn" id="translationChooseBtn">＋ Allega</button><button class="outline-btn" id="translationCameraBtn">◎ Foto</button><button class="outline-btn" id="translationRecordBtn">● Voce</button><input id="translationFileInput" class="hidden" type="file" accept="image/*,.txt,.pdf" /></div><button class="primary-btn soft" id="translateBtn">Traduci →</button></div></section>
           <div class="translation-actions"><button class="swap-btn" id="swapLanguages" title="Inverti lingue">⇄</button></div>
           <section class="soft-box mint-box"><div class="box-label"><select id="toLanguage" class="language-select" aria-label="Lingua di arrivo"><option>Inglese</option><option>Italiano</option><option>Francese</option><option>Spagnolo</option></select><span>traduzione</span></div><textarea id="translatedText" placeholder="Qui apparirà una traduzione naturale e chiara..." readonly></textarea><button class="primary-btn" id="listenTranslation">▶ Ascolta</button></section>
         </div>
@@ -392,17 +404,17 @@
       </section>
 
       <section id="exercises" class="view">
-        <div class="view-intro"><div><div class="panel-kicker">non solo il risultato</div><h1>Capisci ogni<br><em>passaggio.</em></h1><p>Inserisci il problema, scegli la materia e ricevi una spiegazione corta, chiara e adatta al tuo livello.</p></div></div>
+        <div class="view-intro"><div><div class="panel-kicker">non solo il risultato</div><h1>Capisci ogni<br><em>passaggio.</em></h1><p>Scrivi, detta, fotografa o allega il problema. Ricevi una spiegazione corta, chiara e adatta al tuo livello.</p></div></div>
         <div class="exercise-grid">
-          <section class="exercise-side"><div class="panel-kicker">1 · scegli la materia</div><h3>Che cosa stai risolvendo?</h3><p>Partiamo dal tuo tentativo: anche un passaggio sbagliato è utile per capire insieme.</p><div class="subject-row"><button class="subject selected">Matematica</button><button class="subject">Fisica</button><button class="subject">Chimica</button><button class="subject">Grammatica</button></div><textarea id="exerciseInput" class="exercise-input" placeholder="Es. Risolvi: 3x + 5 = 20"></textarea><button class="primary-btn coral" id="solveBtn">Spiegami la soluzione →</button></section>
-          <section class="solution"><div class="eyebrow">anteprima guidata · matematica</div><h3>3x + 5 = 20</h3><div class="solution-step"><span class="step-number">1</span><p>Portiamo il 5 dall'altra parte: <strong>3x = 20 − 5</strong>.</p></div><div class="solution-step"><span class="step-number">2</span><p>Calcoliamo la differenza: <strong>3x = 15</strong>.</p></div><div class="solution-step"><span class="step-number">3</span><p>Dividiamo entrambi i membri per 3: <strong>x = 5</strong>.</p></div><div class="diagram" style="margin-top:16px"><span>prova: 3 · 5 + 5</span><i>=</i><span>20 ✓</span></div></section>
+          <section class="exercise-side"><div class="panel-kicker">1 · scegli la materia</div><h3>Che cosa stai risolvendo?</h3><p>Partiamo dal tuo tentativo: anche un passaggio sbagliato è utile per capire insieme.</p><div class="subject-row"><button class="subject selected">Matematica</button><button class="subject">Fisica</button><button class="subject">Chimica</button><button class="subject">Grammatica</button></div><textarea id="exerciseInput" class="exercise-input" placeholder="Es. Risolvi: 3x + 5 = 20"></textarea><div id="exerciseVoiceStatus" class="voice-status" aria-live="polite"></div><div class="box-actions"><div class="compact-actions"><button class="outline-btn" id="exerciseChooseBtn">＋ Allega</button><button class="outline-btn" id="exerciseCameraBtn">◎ Foto</button><button class="outline-btn" id="exerciseRecordBtn">● Voce</button><input id="exerciseFileInput" class="hidden" type="file" accept="image/*,.txt,.pdf" /></div><button class="primary-btn coral" id="solveBtn">Spiegami la soluzione →</button></div></section>
+          <section class="solution"><div class="eyebrow">spiegazione guidata · matematica</div><h3>3x + 5 = 20</h3><div class="solution-step"><span class="step-number">1</span><p>Portiamo il 5 dall'altra parte: <strong>3x = 20 − 5</strong>.</p></div><div class="solution-step"><span class="step-number">2</span><p>Calcoliamo la differenza: <strong>3x = 15</strong>.</p></div><div class="solution-step"><span class="step-number">3</span><p>Dividiamo entrambi i membri per 3: <strong>x = 5</strong>.</p></div><div class="diagram" style="margin-top:16px"><span>prova: 3 · 5 + 5</span><i>=</i><span>20 ✓</span></div></section>
         </div>
       </section>
 
       <section id="settings" class="view">
-        <div class="view-intro"><div><div class="panel-kicker">fai spazio al tuo modo</div><h1>Impostazioni<br><em>tranquille.</em></h1><p>Suoni morbidi, privacy chiara e un privacy: tutto sotto il tuo controllo.</p></div></div>
+        <div class="view-intro"><div><div class="panel-kicker">fai spazio al tuo modo</div><h1>Impostazioni<br><em>tranquille.</em></h1><p>Suoni morbidi, lettura vocale e privacy: tutto sotto il tuo controllo.</p></div></div>
         <div class="settings-grid">
-          <section class="panel"><div class="panel-head"><div><div class="panel-kicker">preferenze</div><h2>Come vuoi usarla?</h2></div><span>☼</span></div><div class="setting-row"><div><strong>Suoni morbidi</strong><p>Feedback leggero quando tocchi un pulsante.</p></div><button class="toggle on" data-setting="sound" aria-label="Attiva o disattiva suoni"></button></div><div class="setting-row"><div><strong>Lettura ad alta voce</strong><p>Ascolta riassunti e traduzioni dal dispositivo.</p></div><button class="toggle on" data-setting="voice" aria-label="Attiva o disattiva lettura"></button></div><div class="setting-row"><div><strong>Salva in locale</strong><p>Conserva una copia sul dispositivo per ripassare offline.</p></div><button class="toggle on" data-setting="local" aria-label="Attiva o disattiva salvataggio locale"></button></div></section>
+          <section class="panel"><div class="panel-head"><div><div class="panel-kicker">preferenze</div><h2>Come vuoi usarla?</h2></div><span>☼</span></div><div class="setting-row"><div><strong>Suoni morbidi</strong><p>Feedback leggero quando tocchi un pulsante.</p></div><button class="toggle on" data-setting="sound" aria-label="Attiva o disattiva suoni"></button></div><div class="setting-row"><div><strong>Lettura ad alta voce</strong><p>Ascolta riassunti e traduzioni dal dispositivo.</p></div><button class="toggle on" data-setting="voice" aria-label="Attiva o disattiva lettura"></button></div><div class="setting-row"><div><strong>Salva in locale</strong><p>Conserva una copia sul dispositivo per ripassare offline.</p></div><button class="toggle on" data-setting="local" aria-label="Attiva o disattiva salvataggio locale"></button></div><div class="volume-row"><label for="voiceVolume">Volume voce</label><input id="voiceVolume" type="range" min="0" max="1" step="0.05" value="0.85" aria-label="Volume della voce"><output id="voiceVolumeValue">85%</output></div></section>
           <section class="security-card"><div class="lock">⌁</div><div class="eyebrow">privacy</div><h3>La calcolatrice resta davanti.</h3><p>Per tornare all'app chiudi la sessione con il pulsante in alto e inserisci la sequenza ##** sulla calcolatrice.</p><button class="primary-btn" id="closeAppBtn">Torna alla calcolatrice</button><div class="privacy-note">Suggerimento: in una versione reale l'accesso dovrà essere configurabile e rispettare le regole della scuola, l'accessibilità e la privacy dei minori.</div></section>
         </div>
       </section>
@@ -414,6 +426,8 @@
   </div>
   <div id="toast" class="toast" role="status"></div>
 
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
   <script>
     (() => {
       const $ = (s, root = document) => root.querySelector(s);
@@ -432,9 +446,18 @@
       let waitingForOperand = false;
       let soundsOn = localStorage.getItem('scuolaia-sounds') !== 'off';
       let voiceOn = localStorage.getItem('scuolaia-voice') !== 'off';
+      let voiceVolume = Number(localStorage.getItem('scuolaia-voice-volume') || '0.85');
       let cameraStream = null;
+      let cameraTarget = null;
+      let lastSoundAt = 0;
+      let speechRecognition = null;
+      let activeRecordButton = null;
+      let activeRecordStatus = null;
 
       function softClick() {
+        const now = Date.now();
+        if (now - lastSoundAt < 70) return;
+        lastSoundAt = now;
         if (!soundsOn || !window.AudioContext && !window.webkitAudioContext) return;
         try {
           const Ctx = window.AudioContext || window.webkitAudioContext;
@@ -459,7 +482,14 @@
         $$('[data-setting="sound"]').forEach(b => b.classList.toggle('on', value));
       }
       function setVoice(value) { voiceOn = value; localStorage.setItem('scuolaia-voice', value ? 'on' : 'off'); $$('[data-setting="voice"]').forEach(b => b.classList.toggle('on', value)); }
-      setSound(soundsOn); setVoice(voiceOn);
+      function setVoiceVolume(value) {
+        voiceVolume = Math.max(0, Math.min(1, Number(value)));
+        localStorage.setItem('scuolaia-voice-volume', String(voiceVolume));
+        const slider = $('#voiceVolume'); const output = $('#voiceVolumeValue');
+        if (slider) slider.value = voiceVolume; if (output) output.textContent = Math.round(voiceVolume * 100) + '%';
+      }
+      setSound(soundsOn); setVoice(voiceOn); setVoiceVolume(voiceVolume);
+      document.addEventListener('pointerdown', event => { if (event.target.closest('button')) softClick(); }, {passive: true});
 
       let calculatorMode = 'basic';
       let secondMode = false;
@@ -634,47 +664,166 @@
       $('#askBtn').addEventListener('click', () => { const text = $('#homePrompt').value.trim(); if (!text) { showToast('Scrivi prima una domanda'); $('#homePrompt').focus(); return; } navigate('summaries'); showToast('Ho preparato uno spazio per lavorarci insieme'); });
       const initialHash = location.hash.slice(1); if (['home','summaries','translations','exercises','settings'].includes(initialHash)) navigate(initialHash);
 
-      // File upload and drag-and-drop
-      const fileInput = $('#fileInput'); const dropzone = $('#dropzone'); const fileList = $('#fileList'); let fileCount = 2;
-      function addFiles(files) {
-        [...files].forEach(file => {
-          fileCount++;
-          const row = document.createElement('div'); row.className = 'file-row';
-          const ext = (file.name.split('.').pop() || 'file').toLowerCase();
-          row.innerHTML = `<span class="file-badge">${ext === 'pdf' ? '▤' : (file.type.startsWith('image/') ? '▧' : '▱')}</span><span class="file-copy"><strong></strong><small>Analisi in corso · OCR e concetti chiave</small></span><span class="progress"></span>`;
-          row.querySelector('strong').textContent = file.name; fileList.appendChild(row);
-          if (file.type === 'text/plain') { const reader = new FileReader(); reader.onload = e => row.querySelector('small').textContent = 'Testo locale pronto · ' + String(e.target.result).length + ' caratteri'; reader.readAsText(file); }
-          setTimeout(() => { row.querySelector('small').textContent = 'Pronto · testo estratto'; row.querySelector('.progress').style.opacity = '.55'; }, 1100);
-        });
-        $('#fileCount').textContent = fileCount + ' file'; if (files.length) showToast(files.length === 1 ? 'Materiale aggiunto' : files.length + ' materiali aggiunti');
+      // OCR, allegati, cancellazione e fotocamera
+      const fileInput = $('#fileInput'); const dropzone = $('#dropzone'); const fileList = $('#fileList');
+      let fileIdCounter = 0;
+      function setFileCount() { const count = $$('#fileList .file-row').length; $('#fileCount').textContent = count + (count === 1 ? ' file' : ' file'); }
+      function setStatus(row, message) { const target = row && row.querySelector('.file-copy small'); if (target) target.textContent = message; }
+      function fileBadge(file) { return file.type.startsWith('image/') ? '▧' : (file.type === 'application/pdf' ? '▤' : '▱'); }
+      function removeFile(id, message = 'Materiale cancellato') {
+        const row = fileList.querySelector(`[data-id="${id}"]`); if (row) row.remove();
+        setFileCount(); showToast(message); softClick();
       }
-      $('#chooseFileBtn').addEventListener('click', () => fileInput.click()); $('#summaryUploadTop').addEventListener('click', () => fileInput.click()); fileInput.addEventListener('change', e => addFiles(e.target.files));
+      function makeFileRow(file) {
+        const id = 'file-' + (++fileIdCounter);
+        const row = document.createElement('div'); row.className = 'file-row'; row.dataset.id = id;
+        row.innerHTML = `<span class="file-badge">${fileBadge(file)}</span><span class="file-copy"><strong></strong><small>Analisi in corso…</small></span><span class="progress"></span><button class="delete-file" aria-label="Cancella file">×</button>`;
+        row.querySelector('strong').textContent = file.name;
+        row.querySelector('.delete-file').addEventListener('click', () => removeFile(id));
+        fileList.appendChild(row); setFileCount();
+        return row;
+      }
+      function commonWords(text) {
+        const stop = new Set('il lo la i gli le un una uno e o di a da in con su per tra fra del dello della dei delle che chi è sono come nel nella nello nei nelle al allo alla ai agli alle un è più anche non si ad ed'.split(' '));
+        const words = (text.toLowerCase().match(/[a-zàèéìòù]{4,}/gi) || []).filter(w => !stop.has(w));
+        const counts = {}; words.forEach(w => counts[w] = (counts[w] || 0) + 1);
+        return Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
+      }
+      function summarizeText(text) {
+        const clean = text.replace(/\s+/g, ' ').trim();
+        if (!clean) return { summary: 'Non ho trovato testo leggibile.', keywords: [] };
+        const sentences = clean.split(/(?<=[.!?])\s+/).filter(Boolean);
+        const chosen = sentences.slice(0, Math.min(4, sentences.length)).join(' ');
+        return { summary: chosen.length > 620 ? chosen.slice(0, 617) + '…' : chosen, keywords: commonWords(clean) };
+      }
+      function showSummary(title, text) {
+        const result = summarizeText(text);
+        $('#summaryTitle').textContent = title.replace(/\.[^.]+$/, '');
+        $('#summaryText').textContent = result.summary;
+        const words = result.keywords.length ? result.keywords : ['testo', 'idee', 'ripasso'];
+        $('#summaryDiagram').innerHTML = words.map((word, index) => `<span>${word}</span>${index < words.length - 1 ? '<i>→</i>' : ''}`).join('');
+        $('#summarySpeak').dataset.speak = result.summary;
+      }
+      function finishText(row, fileName, text, target, statusElement) {
+        if (target) { target.value = text.trim(); if (statusElement) statusElement.textContent = 'Testo estratto e pronto'; showToast('Testo letto e inserito'); return; }
+        const result = summarizeText(text);
+        setStatus(row, result.summary === 'Non ho trovato testo leggibile.' ? 'Nessun testo leggibile' : 'Pronto · testo letto e riassunto');
+        row.querySelector('.progress').style.opacity = '.45'; showSummary(fileName, text); showToast('Testo letto e riassunto');
+      }
+      async function processImage(file, row = null, target = null, statusElement = null) {
+        if (!window.Tesseract) { setStatus(row, 'OCR non disponibile: serve connessione'); if (statusElement) statusElement.textContent = 'OCR non disponibile: controlla la connessione'; showToast('Per leggere immagini serve il motore OCR online'); return; }
+        setStatus(row, 'OCR in corso…'); if (statusElement) statusElement.textContent = 'Lettura della foto in corso…';
+        try {
+          const result = await Tesseract.recognize(file, 'ita+eng', { logger: info => { if (info.status === 'recognizing text' && row) setStatus(row, 'OCR ' + Math.round((info.progress || 0) * 100) + '%…'); } });
+          const text = (result.data.text || '').trim();
+          if (!text) { setStatus(row, 'Foto senza testo leggibile'); if (statusElement) statusElement.textContent = 'Non ho trovato testo nella foto'; showToast('Non ho trovato testo leggibile'); return; }
+          finishText(row, file.name, text, target, statusElement);
+        } catch (error) { setStatus(row, 'OCR non riuscito'); if (statusElement) statusElement.textContent = 'OCR non riuscito: prova con una foto più nitida'; showToast('Prova con una foto più nitida'); }
+      }
+      async function processPdf(file, row = null, target = null, statusElement = null) {
+        if (!window.pdfjsLib) { setStatus(row, 'Lettore PDF non disponibile: serve connessione'); if (statusElement) statusElement.textContent = 'Lettore PDF non disponibile'; return; }
+        setStatus(row, 'Lettura PDF in corso…'); if (statusElement) statusElement.textContent = 'Lettura del PDF in corso…';
+        try {
+          const data = await file.arrayBuffer(); const pdf = await window.pdfjsLib.getDocument({data}).promise; let text = '';
+          for (let pageNumber = 1; pageNumber <= Math.min(pdf.numPages, 20); pageNumber++) { const page = await pdf.getPage(pageNumber); const content = await page.getTextContent(); text += content.items.map(item => item.str).join(' ') + '\\n'; }
+          finishText(row, file.name, text, target, statusElement);
+        } catch (error) { setStatus(row, 'PDF non leggibile'); if (statusElement) statusElement.textContent = 'PDF non leggibile'; showToast('Prova con un PDF più semplice o una foto'); }
+      }
+      function processAttachment(file, target = null, statusElement = null, row = null) {
+        if (file.type.startsWith('image/')) { processImage(file, row, target, statusElement); return; }
+        if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) { processPdf(file, row, target, statusElement); return; }
+        if (file.type === 'text/plain' || file.name.toLowerCase().endsWith('.txt')) {
+          const reader = new FileReader(); reader.onload = event => finishText(row, file.name, String(event.target.result || ''), target, statusElement); reader.readAsText(file); return;
+        }
+        if (row) setStatus(row, 'Formato non ancora leggibile');
+        if (statusElement) statusElement.textContent = 'Per Word usa una foto o copia il testo';
+        showToast('Per Word usa una foto o copia il testo');
+      }
+      function addFiles(files) {
+        [...files].forEach(file => { const row = makeFileRow(file); processAttachment(file, null, null, row); });
+        if (files.length) showToast(files.length === 1 ? 'Materiale aggiunto' : files.length + ' materiali aggiunti');
+      }
+      $$('.file-row .delete-file').forEach(button => button.addEventListener('click', () => removeFile(button.closest('.file-row').dataset.id)));
+      $('#clearFilesBtn').addEventListener('click', () => { fileList.innerHTML = ''; setFileCount(); showSummary('Nessun materiale', 'Aggiungi una foto, un testo o un appunto per iniziare.'); showToast('Materiali cancellati'); });
+      $('#chooseFileBtn').addEventListener('click', () => fileInput.click()); $('#summaryUploadTop').addEventListener('click', () => fileInput.click()); fileInput.addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
       ['dragenter','dragover'].forEach(type => dropzone.addEventListener(type, e => { e.preventDefault(); dropzone.classList.add('dragover'); }));
       ['dragleave','drop'].forEach(type => dropzone.addEventListener(type, e => { e.preventDefault(); dropzone.classList.remove('dragover'); })); dropzone.addEventListener('drop', e => addFiles(e.dataTransfer.files));
-      $('#diagramBtn').addEventListener('click', () => showToast('Diagramma pronto: crisi → rivolta → nuovi diritti'));
+      $('#diagramBtn').addEventListener('click', () => showToast('Diagramma aggiornato con i concetti chiave')); $('#summarySpeak').addEventListener('click', () => speak($('#summarySpeak').dataset.speak || $('#summaryText').textContent));
 
-      // Camera
+      // Fotocamera: la stessa funzione alimenta riassunti, traduzioni ed esercizi.
       const cameraModal = $('#cameraModal'); const video = $('#cameraVideo');
-      async function openCamera() {
-        cameraModal.classList.remove('hidden');
-        try { cameraStream = await navigator.mediaDevices.getUserMedia({video: {facingMode: 'environment'}, audio: false}); video.srcObject = cameraStream; }
-        catch (e) { video.outerHTML = '<div id="cameraVideo" style="display:grid;place-items:center;min-height:240px;color:#d6ccca;border-radius:18px;background:#2a2527;text-align:center;padding:25px">La fotocamera non è disponibile in questa anteprima.<br>Puoi comunque scegliere un’immagine dal dispositivo.</div>'; showToast('Permesso fotocamera non disponibile'); }
+      async function openCamera(target = null) {
+        cameraTarget = target; cameraModal.classList.remove('hidden');
+        try { cameraStream = await navigator.mediaDevices.getUserMedia({video: {facingMode: {ideal: 'environment'}}, audio: false}); video.srcObject = cameraStream; }
+        catch (error) { showToast('Consenti l’accesso alla fotocamera'); }
       }
-      function closeCamera() { cameraModal.classList.add('hidden'); if (cameraStream) { cameraStream.getTracks().forEach(t => t.stop()); cameraStream = null; } }
-      $('#openCameraBtn').addEventListener('click', openCamera); $('#closeCamera').addEventListener('click', closeCamera);
-      $('#captureBtn').addEventListener('click', () => { closeCamera(); fileCount++; $('#fileCount').textContent = fileCount + ' file'; const row = document.createElement('div'); row.className = 'file-row'; row.innerHTML = '<span class="file-badge">▧</span><span class="file-copy"><strong>foto_appunto_01.jpg</strong><small>Pronto · OCR completato</small></span><span class="progress"></span>'; fileList.appendChild(row); showToast('Foto acquisita e pronta per il riassunto'); });
+      function closeCamera() { cameraModal.classList.add('hidden'); if (cameraStream) { cameraStream.getTracks().forEach(track => track.stop()); cameraStream = null; } }
+      $('#openCameraBtn').addEventListener('click', () => openCamera()); $('#closeCamera').addEventListener('click', closeCamera);
+      $('#captureBtn').addEventListener('click', () => {
+        if (!cameraStream || !video.videoWidth) { showToast('Fotocamera non pronta'); return; }
+        const canvas = document.createElement('canvas'); canvas.width = video.videoWidth; canvas.height = video.videoHeight; canvas.getContext('2d').drawImage(video, 0, 0);
+        canvas.toBlob(blob => { const file = new File([blob], 'foto_appunto_' + Date.now() + '.jpg', {type: 'image/jpeg'}); const target = cameraTarget; closeCamera(); if (target) processAttachment(file, target, target.id === 'sourceText' ? $('#translationVoiceStatus') : $('#exerciseVoiceStatus')); else addFiles([file]); }, 'image/jpeg', .92);
+      });
 
-      // Translation demo
-      $('#translateBtn').addEventListener('click', () => { const source = $('#sourceText').value.trim(); if (!source) { showToast('Inserisci una frase da tradurre'); return; } const lang = $('#toLanguage').value; const demo = lang === 'Inglese' ? 'Learning is easier when ideas become clear.' : lang === 'Francese' ? 'Apprendre est plus facile quand les idées deviennent claires.' : lang === 'Spagnolo' ? 'Aprender es más fácil cuando las ideas se vuelven claras.' : 'Imparare è più facile quando le idee diventano chiare.'; $('#translatedText').value = demo + '\n\n[Traduzione demo: collega un servizio AI per traduzioni reali]'; showToast('Traduzione pronta da rileggere'); });
+      // Traduzioni, allegati e dettatura
+      $('#translationChooseBtn').addEventListener('click', () => $('#translationFileInput').click());
+      $('#translationFileInput').addEventListener('change', event => { const file = event.target.files[0]; if (file) processAttachment(file, $('#sourceText'), $('#translationVoiceStatus')); event.target.value = ''; });
+      $('#translationCameraBtn').addEventListener('click', () => openCamera($('#sourceText')));
+      $('#translationRecordBtn').addEventListener('click', () => toggleRecording($('#sourceText'), $('#translationRecordBtn'), $('#translationVoiceStatus')));
+      $('#translateBtn').addEventListener('click', () => {
+        const source = $('#sourceText').value.trim(); if (!source) { showToast('Inserisci, allega o detta una frase'); return; }
+        const lang = $('#toLanguage').value; const dictionary = lang === 'Inglese' ? {'ciao':'hello','casa':'house','scuola':'school','libro':'book','acqua':'water','il':'the','la':'the','è':'is','sono':'are','e':'and','per':'for','con':'with','clima':'climate','ambiente':'environment'} : lang === 'Francese' ? {'ciao':'bonjour','casa':'maison','scuola':'école','libro':'livre','acqua':'eau','il':'le','la':'la','è':'est','sono':'sont','e':'et'} : lang === 'Spagnolo' ? {'ciao':'hola','casa':'casa','scuola':'escuela','libro':'libro','acqua':'agua','il':'el','la':'la','è':'es','sono':'son','e':'y'} : {};
+        let translated = source; Object.entries(dictionary).forEach(([from, to]) => { translated = translated.replace(new RegExp('\\b' + from + '\\b', 'gi'), to); });
+        if (translated === source && lang !== 'Italiano') translated = source + '\n\n[Traduzione rapida demo: per una traduzione completa collega il motore AI.]';
+        $('#translatedText').value = translated; showToast('Traduzione pronta');
+      });
       $('#swapLanguages').addEventListener('click', () => { const from = $('#fromLanguage'), to = $('#toLanguage'); const tmp = from.value; from.value = to.value; to.value = tmp; softClick(); });
       $('#listenTranslation').addEventListener('click', () => speak($('#translatedText').value || 'La traduzione apparirà qui.'));
 
-      // Exercise demo
+      // Esercizi: allegato, foto, dettatura e spiegazione locale di equazioni semplici.
+      $('#exerciseChooseBtn').addEventListener('click', () => $('#exerciseFileInput').click());
+      $('#exerciseFileInput').addEventListener('change', event => { const file = event.target.files[0]; if (file) processAttachment(file, $('#exerciseInput'), $('#exerciseVoiceStatus')); event.target.value = ''; });
+      $('#exerciseCameraBtn').addEventListener('click', () => openCamera($('#exerciseInput')));
+      $('#exerciseRecordBtn').addEventListener('click', () => toggleRecording($('#exerciseInput'), $('#exerciseRecordBtn'), $('#exerciseVoiceStatus')));
       $$('.subject').forEach(btn => btn.addEventListener('click', () => { $$('.subject').forEach(b => b.classList.remove('selected')); btn.classList.add('selected'); softClick(); }));
-      $('#solveBtn').addEventListener('click', () => { const value = $('#exerciseInput').value.trim(); if (!value) { showToast('Scrivi il problema da risolvere'); $('#exerciseInput').focus(); return; } showToast('Spiegazione generata in modalità demo'); });
+      $('#solveBtn').addEventListener('click', () => {
+        const value = $('#exerciseInput').value.trim(); if (!value) { showToast('Scrivi, allega o detta il problema'); $('#exerciseInput').focus(); return; }
+        const match = value.match(/([+-]?\d*\.?\d*)\s*x\s*([+-]\s*\d+)?\s*=\s*(-?\d+(?:\.\d+)?)/i);
+        const solution = $('.solution');
+        if (match) {
+          const a = Number(match[1] || 1); const b = Number((match[2] || '0').replace(/\s/g, '')); const c = Number(match[3]); const x = (c - b) / a;
+          solution.querySelector('h3').textContent = value; solution.querySelectorAll('.solution-step')[0].querySelector('p').innerHTML = `Portiamo il termine noto dall'altra parte: <strong>${a}x = ${c} ${b >= 0 ? '− ' + b : '+ ' + Math.abs(b)}</strong>.`;
+          solution.querySelectorAll('.solution-step')[1].querySelector('p').innerHTML = `Semplifichiamo il secondo membro: <strong>${a}x = ${c - b}</strong>.`;
+          solution.querySelectorAll('.solution-step')[2].querySelector('p').innerHTML = `Dividiamo per ${a}: <strong>x = ${x}</strong>.`;
+        } else { solution.querySelector('h3').textContent = 'Problema ricevuto'; solution.querySelectorAll('.solution-step')[0].querySelector('p').innerHTML = '<strong>1.</strong> Ho letto il testo allegato.'; solution.querySelectorAll('.solution-step')[1].querySelector('p').innerHTML = '<strong>2.</strong> Individua dati, formula e domanda.'; solution.querySelectorAll('.solution-step')[2].querySelector('p').innerHTML = '<strong>3.</strong> Per una soluzione completa collega il motore AI.'; }
+        showToast('Spiegazione aggiornata');
+      });
 
-      function speak(text) { if (!voiceOn || !('speechSynthesis' in window)) { showToast(voiceOn ? 'La lettura vocale non è disponibile qui' : 'Lettura vocale disattivata'); return; } speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'it-IT'; utterance.rate = .94; speechSynthesis.speak(utterance); }
-      $$('.speak-btn').forEach(btn => btn.addEventListener('click', () => speak(btn.dataset.speak)));
+      // Dettatura: usa il riconoscimento vocale del browser e inserisce il testo nel campo selezionato.
+      function toggleRecording(target, button, status) {
+        if (speechRecognition) { speechRecognition.stop(); return; }
+        const Recognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+        if (!Recognition) { status.textContent = 'La dettatura non è supportata da questo browser'; showToast('Prova con Chrome o Safari aggiornato'); return; }
+        const base = target.value.trim(); let sessionText = '';
+        speechRecognition = new Recognition(); activeRecordButton = button; activeRecordStatus = status;
+        speechRecognition.lang = 'it-IT'; speechRecognition.continuous = true; speechRecognition.interimResults = true;
+        speechRecognition.onstart = () => { button.textContent = '■ Ferma'; status.textContent = 'Sto ascoltando… parla vicino al microfono'; showToast('Registrazione avviata'); };
+        speechRecognition.onresult = event => {
+          let interim = '';
+          for (let i = event.resultIndex; i < event.results.length; i++) { const text = event.results[i][0].transcript; if (event.results[i].isFinal) sessionText += text + ' '; else interim += text; }
+          target.value = [base, sessionText, interim].filter(Boolean).join(' ').replace(/\s+/g, ' ').trim(); status.textContent = interim ? 'Sto ascoltando: ' + interim : 'Testo trascritto in tempo reale';
+        };
+        speechRecognition.onerror = () => { status.textContent = 'Microfono non disponibile o permesso negato'; showToast('Controlla il permesso del microfono'); };
+        speechRecognition.onend = () => { if (activeRecordButton === button) { button.textContent = '● Voce'; status.textContent = sessionText ? 'Registrazione terminata' : ''; speechRecognition = null; activeRecordButton = null; activeRecordStatus = null; } };
+        try { speechRecognition.start(); } catch (error) { speechRecognition = null; status.textContent = 'Impossibile avviare il microfono'; }
+      }
+      function speak(text) {
+        if (!voiceOn || !('speechSynthesis' in window)) { showToast(voiceOn ? 'La lettura vocale non è disponibile qui' : 'Lettura vocale disattivata'); return; }
+        speechSynthesis.cancel(); const utterance = new SpeechSynthesisUtterance(text); utterance.lang = 'it-IT'; utterance.rate = .94; utterance.volume = voiceVolume; speechSynthesis.speak(utterance);
+      }
+      $('#voiceVolume').addEventListener('input', event => setVoiceVolume(event.target.value));
+      $('#summarySpeak').dataset.speak = $('#summaryText').textContent;
+
       $$('[data-setting]').forEach(btn => btn.addEventListener('click', () => { const type = btn.dataset.setting; if (type === 'sound') setSound(!soundsOn); if (type === 'voice') setVoice(!voiceOn); if (type === 'local') { btn.classList.toggle('on'); showToast(btn.classList.contains('on') ? 'Salvataggio locale attivo' : 'Salvataggio locale disattivato'); } softClick(); }));
       if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {})); }
     })();

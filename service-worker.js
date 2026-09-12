@@ -1,4 +1,4 @@
-const CACHE_NAME = 'calcolatrice-v1';
+const CACHE_NAME = 'calcolatrice-v2';
 const APP_FILES = [
   './',
   './index.html',
