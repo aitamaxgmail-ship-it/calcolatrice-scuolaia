@@ -23,7 +23,10 @@ export default async function handler(req, res) {
   if (imageData.length > 9_000_000) return res.status(413).json({ error: 'Immagine troppo grande' });
 
   const prompts = {
-    summary: `Sei il lettore intelligente di una app scolastica italiana. Analizza l'immagine allegata, che può contenere testo stampato, scrittura manuale, schemi o infografiche. Trascrivi solo ciò che è realmente leggibile, mantenendo l'ordine logico. Correggi gli errori evidenti dell'OCR senza inventare contenuti. Poi crea un riassunto chiaro e una mappa concettuale con 3 o 4 grandi linee. Se una parola è dubbia, inseriscila in warnings invece di indovinarla.`,
+    summary: `Sei il lettore intelligente di una app scolastica italiana. Analizza l'immagine allegata, che può contenere testo stampato, scrittura manuale, schemi o infografiche.
+TRASCRIZIONE: riporta in transcription solo ciò che è realmente leggibile, mantenendo l'ordine logico e senza inventare.
+RIASSUNTO: il campo summary deve essere un vero riassunto autonomo, NON una copia della trascrizione: scrivi 3 o 4 frasi brevi, massimo 90 parole, spiegando di cosa parla la pagina, quali sono le 2 o 3 informazioni o azioni essenziali e cosa bisogna ricordare. Per lettere o avvisi indica motivo, richiesta principale, eventuale scadenza e canali utili, ma ometti indirizzi personali, codici e dettagli ripetitivi non necessari.
+CONCETTI: crea 3 o 4 concetti principali sensati, ciascuno con un titolo di 1-4 parole e una descrizione breve che spieghi il ruolo del concetto nel testo. Se una parola è dubbia, inseriscila in warnings invece di indovinarla.`,
     transcribe: `Leggi l'immagine allegata per una app scolastica italiana. Trascrivi il testo stampato o scritto a mano nel modo più fedele possibile, mantenendo formule, numeri e ordine delle righe. Non inventare le parti illeggibili: segnala i dubbi in warnings.`,
     exercise: `Leggi l'immagine allegata per una app scolastica italiana. Trascrivi il problema o l'esercizio, riconosci materia e dati, e prepara una breve spiegazione dei passaggi. Se una parte non è leggibile, segnalala in warnings e non inventarla.`
   };
@@ -31,9 +34,9 @@ export default async function handler(req, res) {
   const schema = {
     type: 'object',
     properties: {
-      title: { type: 'string' },
+      title: { type: 'string', description: 'Titolo breve e descrittivo della pagina, massimo 8 parole.' },
       transcription: { type: 'string' },
-      summary: { type: 'string' },
+      summary: { type: 'string', description: 'Riassunto concreto e autonomo, 3 o 4 frasi, massimo 90 parole; non ripetere la trascrizione.' },
       concepts: {
         type: 'array',
         items: {
@@ -45,8 +48,8 @@ export default async function handler(req, res) {
           required: ['title', 'description']
         }
       },
-      warnings: { type: 'array', items: { type: 'string' } },
-      confidence: { type: 'string' }
+      warnings: { type: 'array', items: { type: 'string' }, description: 'Parole o parti dell’immagine dubbie e da verificare.' },
+      confidence: { type: 'string', description: 'Affidabilità complessiva: alta, media o bassa, con eventuale breve motivazione.' }
     },
     required: ['title', 'transcription', 'summary', 'concepts', 'warnings', 'confidence']
   };
