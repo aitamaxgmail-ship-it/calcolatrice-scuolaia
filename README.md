@@ -9,6 +9,9 @@ Prototipo front-end statico installabile come web app. Il file principale è `in
 - codice di ingresso da entrambe le modalità: `##**`;
 - ritorno alla calcolatrice dall'icona in alto o dalle impostazioni;
 - home con richiesta libera;
+- scanner guidato per pagine stampate e appunti, con miglioramento immagine prima dell'OCR;
+- riassunti progressivi: riassumi, riassumi ancora e diagramma dei concetti principali;
+- esportazione del riassunto in formato Word `.docx`;
 - riassunti locali da file di testo e OCR locale per immagini quando il motore OCR online è disponibile;
 - caricamento file, drag and drop, cancellazione dei materiali e fotocamera;
 - allegati, foto e dettatura anche in traduzioni ed esercizi;
@@ -83,3 +86,19 @@ Il sito deve essere pubblicato in HTTPS perché manifest e service worker funzio
 5. Moderazione, consenso e conformità GDPR per utenti minorenni e scuole.
 6. Test con studenti e insegnanti, accessibilità WCAG e modalità offline completa.
 7. Sostituzione dei testi demo con risposte del backend: il prototipo attuale non invia documenti a nessun servizio.
+
+## Gemini Vision per immagini e scrittura manuale
+
+Il progetto include un endpoint sicuro in `api/gemini.js`. GitHub Pages può pubblicare solo la parte statica e quindi usa l'OCR locale; per attivare Gemini bisogna pubblicare lo stesso repository su Vercel.
+
+1. Importa il repository `calcolatrice-scuolaia` su Vercel.
+2. Vercel riconoscerà automaticamente la cartella `api`.
+3. In **Project Settings → Environment Variables** aggiungi:
+   - `GEMINI_API_KEY` = la chiave ottenuta da Google AI Studio;
+   - `GEMINI_MODEL` = `gemini-2.5-flash`.
+4. Fai un nuovo deploy.
+5. Usa l'indirizzo Vercel come link principale dell'app.
+
+La chiave resta sul server e non viene inserita in `index.html` o su GitHub. Se l'endpoint Gemini non è disponibile, l'app ritorna automaticamente all'OCR locale.
+
+Non caricare mai un file `.env` con la chiave nel repository.

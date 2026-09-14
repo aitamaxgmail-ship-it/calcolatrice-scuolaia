@@ -1,0 +1,8 @@
+{
+  "name": "scuolaia-gemini-backend",
+  "private": true,
+  "type": "module",
+  "dependencies": {
+    "@google/genai": "latest"
+  }
+}
