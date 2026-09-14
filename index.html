@@ -157,6 +157,13 @@
     .output-card p { color: #d2cbca; font-size: 13px; line-height: 1.55; margin: 0; }
     .output-card .mini-actions { display: flex; gap: 8px; margin-top: 22px; }
     .dark-btn { background: #4b454a; color: #fff; padding: 10px 12px; border-radius: 11px; font-size: 11px; font-weight: 700; }
+    .dark-btn:disabled { opacity: .45; cursor: not-allowed; }
+    .summary-image-wrap { margin-top: 16px; border-radius: 14px; overflow: hidden; max-height: 150px; background: #fff; }
+    .summary-image-wrap.hidden { display: none; }
+    .summary-image-wrap img { display: block; width: 100%; max-height: 150px; object-fit: cover; opacity: .92; }
+    .diagram-map { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; margin-top: 14px; }
+    .diagram-map .map-node { padding: 9px 6px; border: 1px solid rgba(255,255,255,.18); border-radius: 11px; background: rgba(255,255,255,.08); text-align: center; font-size: 10px; }
+    .diagram-map .map-node b { display: block; font-size: 18px; margin-bottom: 4px; }
     .diagram { display: flex; align-items: center; gap: 5px; margin-top: 20px; color: #fff; font-size: 11px; }
     .diagram span { padding: 8px 9px; border: 1px solid rgba(255,255,255,.2); border-radius: 9px; background: rgba(255,255,255,.08); }
     .diagram i { color: var(--yellow); font-style: normal; }
@@ -392,7 +399,7 @@
             <div id="recordingStatus" class="voice-status" aria-live="polite"></div>
             <input id="fileInput" class="hidden" type="file" accept="image/*,.pdf,.txt,.doc,.docx" multiple />
           </section>
-          <section class="output-card"><div class="eyebrow">risultato</div><h3 id="summaryTitle">La Rivoluzione francese</h3><p id="summaryText">Nel 1789 la crisi economica e le disuguaglianze sociali portarono alla fine dell'Ancien Régime. La Rivoluzione introdusse i principi di libertà, uguaglianza e sovranità popolare.</p><div id="summaryDiagram" class="diagram"><span>crisi</span><i>→</i><span>rivolta</span><i>→</i><span>nuovi diritti</span></div><div class="mini-actions"><button class="dark-btn" id="summarySpeak">▶ Play</button><button class="dark-btn" id="summaryStop">■ Stop</button><button class="dark-btn" id="diagramBtn">✦ Crea diagramma</button></div></section>
+          <section class="output-card"><div class="eyebrow">risultato</div><h3 id="summaryTitle">La Rivoluzione francese</h3><p id="summaryText">Nel 1789 la crisi economica e le disuguaglianze sociali portarono alla fine dell'Ancien Régime. La Rivoluzione introdusse i principi di libertà, uguaglianza e sovranità popolare.</p><div id="summaryImageWrap" class="summary-image-wrap hidden"><img id="summaryImage" alt="Immagine di riferimento del materiale"></div><div id="summaryDiagram" class="diagram"><span>crisi</span><i>→</i><span>rivolta</span><i>→</i><span>nuovi diritti</span></div><div class="mini-actions"><button class="dark-btn" id="summarizeBtn">↻ Riassumi</button><button class="dark-btn" id="shorterBtn">⇣ Riassumi ancora</button><button class="dark-btn" id="summarySpeak">▶ Play</button><button class="dark-btn" id="summaryStop">■ Stop</button><button class="dark-btn" id="diagramBtn">✦ Diagramma</button><button class="dark-btn" id="downloadWord">▣ Word</button></div></section>
         </div>
         <div class="panel file-queue"><div class="panel-head"><div><div class="panel-kicker">i tuoi materiali</div><h2>In lavorazione</h2></div><div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end"><span class="panel-kicker" id="fileCount">2 file</span><button class="outline-btn" id="clearFilesBtn">Cancella tutto</button></div></div><div id="fileList"><div class="file-row" data-id="demo-history"><span class="file-badge">▤</span><span class="file-copy"><strong>capitolo_03_storia.pdf</strong><small>Pronto · testo estratto</small></span><span class="progress"></span><button class="delete-file" aria-label="Cancella capitolo_03_storia.pdf">×</button></div><div class="file-row" data-id="demo-clima"><span class="file-badge">▧</span><span class="file-copy"><strong>appunti_clima.jpg</strong><small>Pronto · OCR completato</small></span><span class="progress"></span><button class="delete-file" aria-label="Cancella appunti_clima.jpg">×</button></div></div></div>
       </section>
@@ -432,6 +439,7 @@
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5.0.4/dist/tesseract.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html-docx-js@0.3.1/dist/html-docx.js"></script>
   <script>
     (() => {
       const $ = (s, root = document) => root.querySelector(s);
@@ -693,27 +701,37 @@
         const counts = {}; words.forEach(w => counts[w] = (counts[w] || 0) + 1);
         return Object.entries(counts).sort((a,b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
       }
-      function summarizeText(text) {
+      let summarySourceText = "Nel 1789 la crisi economica e le disuguaglianze sociali portarono alla fine dell'Ancien Régime. La Rivoluzione introdusse i principi di libertà, uguaglianza e sovranità popolare.";
+      let summarySourceTitle = 'La Rivoluzione francese';
+      let summaryLevel = 0;
+      let summaryImageURL = null;
+      function summarizeText(text, level = 0) {
         const clean = text.replace(/\s+/g, ' ').trim();
         if (!clean) return { summary: 'Non ho trovato testo leggibile.', keywords: [] };
-        const sentences = clean.split(/(?<=[.!?])\s+/).filter(Boolean);
-        const chosen = sentences.slice(0, Math.min(4, sentences.length)).join(' ');
-        return { summary: chosen.length > 620 ? chosen.slice(0, 617) + '…' : chosen, keywords: commonWords(clean) };
+        const sentences = clean.split(/(?<=[.!?])\s+/).filter(Boolean); const sentenceLimit = [5, 3, 2, 1, 1, 1][Math.min(level, 5)]; const charLimit = [700, 480, 320, 210, 140, 90][Math.min(level, 5)];
+        let chosen = sentences.slice(0, sentenceLimit).join(' '); if (chosen.length > charLimit) chosen = chosen.slice(0, Math.max(60, charLimit - 1)).replace(/\s+\S*$/, '') + '…';
+        return { summary: chosen, keywords: commonWords(clean) };
       }
       function normalizeOcrText(text) {
-        return text.replace(/-\s*\n(?=\p{L})/gu, '').replace(/[ \t]+\n/g, '\n').split('\n').map(line => line.trim()).filter(Boolean).join(' ').replace(/\s+/g, ' ').trim();
+        return text.replace(/-\s*\n(?=\p{L})/gu, '').replace(/[ \t]+\n/g, '\n').split('\n').map(line => line.trim()).filter(line => line.length > 1).join(' ').replace(/\s+/g, ' ').trim();
       }
-      function showSummary(title, text) {
-        const result = summarizeText(text);
-        $('#summaryTitle').textContent = title.replace(/\.[^.]+$/, '');
-        $('#summaryText').textContent = result.summary;
-        const words = result.keywords.length ? result.keywords : ['testo', 'idee', 'ripasso'];
-        $('#summaryDiagram').innerHTML = words.map((word, index) => `<span>${word}</span>${index < words.length - 1 ? '<i>→</i>' : ''}`).join('');
-        $('#summarySpeak').dataset.speak = result.summary;
+      function setSummaryImage(file) {
+        const wrap = $('#summaryImageWrap'); const image = $('#summaryImage');
+        if (summaryImageURL) URL.revokeObjectURL(summaryImageURL); summaryImageURL = null;
+        if (!file || !file.type.startsWith('image/')) { wrap.classList.add('hidden'); image.removeAttribute('src'); return; }
+        summaryImageURL = URL.createObjectURL(file); image.src = summaryImageURL; wrap.classList.remove('hidden');
+      }
+      function showSummary(title, text, level = 0) {
+        summarySourceTitle = title.replace(/\.[^.]+$/, ''); summarySourceText = text; summaryLevel = level;
+        const result = summarizeText(text, level); $('#summaryTitle').textContent = summarySourceTitle; $('#summaryText').textContent = result.summary;
+        const words = result.keywords.length ? result.keywords : ['testo', 'idee', 'ripasso']; const icons = ['📌', '🔎', '✓'];
+        $('#summaryDiagram').className = 'diagram-map'; $('#summaryDiagram').innerHTML = words.map((word, index) => `<div class="map-node"><b>${icons[index] || '•'}</b>${word}</div>`).join('');
+        $('#summarySpeak').dataset.speak = result.summary; $('#shorterBtn').disabled = summaryLevel >= 5;
       }
       function refreshSummaryFromFiles() {
-        const texts = $$('#fileList .file-row').map(row => row._ocrText).filter(Boolean);
-        if (texts.length) showSummary(texts.length === 1 ? 'Pagina letta' : texts.length + ' pagine lette', texts.join(' '));
+        const rows = $$('#fileList .file-row'); const texts = rows.map(row => row._ocrText).filter(Boolean);
+        const imageRow = rows.find(row => row._sourceFile); if (imageRow) setSummaryImage(imageRow._sourceFile); else setSummaryImage(null);
+        if (texts.length) showSummary(texts.length === 1 ? 'Pagina letta' : texts.length + ' pagine lette', texts.join(' '), 0);
       }
       function finishText(row, fileName, text, target, statusElement) {
         const cleanText = normalizeOcrText(text);
@@ -749,6 +767,7 @@
             const result = await Tesseract.recognize(variant, 'ita', options); const text = normalizeOcrText(result.data.text || ''); results.push({text, confidence: result.data.confidence || 0, score: ocrQuality(text, result.data.confidence || 0)});
           }
           results.sort((a, b) => b.score - a.score); const best = results[0];
+          if (row) row._sourceFile = file;
           if (!best.text || best.text.length < 24 || best.score < 35) { setStatus(row, 'Foto poco leggibile'); if (statusElement) statusElement.textContent = 'Foto poco leggibile: rifotografa una pagina alla volta'; showToast('Rifotografa la pagina più dritta e luminosa'); return; }
           finishText(row, file.name, best.text, target, statusElement);
         } catch (error) { setStatus(row, 'OCR non riuscito'); if (statusElement) statusElement.textContent = 'OCR non riuscito: prova con una foto più nitida e parallela'; showToast('Prova con una foto più nitida'); }
@@ -777,11 +796,26 @@
         if (files.length) showToast(files.length === 1 ? 'Materiale aggiunto' : files.length + ' materiali aggiunti');
       }
       $$('.file-row .delete-file').forEach(button => button.addEventListener('click', () => removeFile(button.closest('.file-row').dataset.id)));
-      $('#clearFilesBtn').addEventListener('click', () => { fileList.innerHTML = ''; setFileCount(); showSummary('Nessun materiale', 'Aggiungi una foto, un testo o un appunto per iniziare.'); showToast('Materiali cancellati'); });
+      $('#clearFilesBtn').addEventListener('click', () => { fileList.innerHTML = ''; setFileCount(); setSummaryImage(null); showSummary('Nessun materiale', 'Aggiungi una foto, un testo o un appunto per iniziare.'); showToast('Materiali cancellati'); });
       $('#chooseFileBtn').addEventListener('click', () => fileInput.click()); $('#summaryUploadTop').addEventListener('click', () => fileInput.click()); fileInput.addEventListener('change', e => { addFiles(e.target.files); e.target.value = ''; });
       ['dragenter','dragover'].forEach(type => dropzone.addEventListener(type, e => { e.preventDefault(); dropzone.classList.add('dragover'); }));
       ['dragleave','drop'].forEach(type => dropzone.addEventListener(type, e => { e.preventDefault(); dropzone.classList.remove('dragover'); })); dropzone.addEventListener('drop', e => addFiles(e.dataTransfer.files));
       $('#diagramBtn').addEventListener('click', () => showToast('Diagramma aggiornato con i concetti chiave')); $('#summarySpeak').addEventListener('click', () => toggleSpeech($('#summarySpeak').dataset.speak || $('#summaryText').textContent, $('#summarySpeak'))); $('#summaryStop').addEventListener('click', () => stopSpeech());
+      $('#summarizeBtn').addEventListener('click', () => { showSummary(summarySourceTitle, summarySourceText, 0); showToast('Riassunto rigenerato'); });
+      $('#shorterBtn').addEventListener('click', () => { if (summaryLevel >= 5) { showToast('Questo è il riassunto più breve'); return; } showSummary(summarySourceTitle, summarySourceText, summaryLevel + 1); showToast('Concetto ristretto ancora'); });
+      function escapeHtml(value) { return String(value).replace(/[&<>"']/g, char => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[char])); }
+      async function downloadWordSummary() {
+        if (!window.htmlDocx) { showToast('Generatore Word non disponibile: serve connessione'); return; }
+        const result = summarizeText(summarySourceText, summaryLevel); const words = result.keywords.length ? result.keywords : ['testo', 'idee', 'ripasso'];
+        const html = `<!doctype html><html><head><meta charset="utf-8"><style>body{font-family:Arial,sans-serif;color:#222}h1{color:#ef573d}h2{color:#555}li{margin:6px 0}.schema{padding:12px;background:#fff0e5;border-left:5px solid #ff704d}</style></head><body><h1>${escapeHtml(summarySourceTitle)}</h1><h2>Riassunto</h2><p>${escapeHtml(result.summary)}</p><h2>Grandi linee</h2><ul>${words.map(word => `<li>${escapeHtml(word)}</li>`).join('')}</ul><h2>Schema</h2><p class="schema">${words.map((word, index) => `${index + 1}. ${escapeHtml(word)}`).join('  →  ')}</p><p><small>Creato con scuolaia</small></p></body></html>`;
+        try {
+          const blob = window.htmlDocx.asBlob(html, {orientation: 'portrait', margins: {top: 720, right: 720, bottom: 720, left: 720}}); const file = new File([blob], 'scuolaia-riassunto.docx', {type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'});
+          if (navigator.share && navigator.canShare && navigator.canShare({files: [file]})) await navigator.share({files: [file], title: summarySourceTitle});
+          else { const url = URL.createObjectURL(blob); const link = document.createElement('a'); link.href = url; link.download = 'scuolaia-riassunto.docx'; link.click(); setTimeout(() => URL.revokeObjectURL(url), 1000); }
+          showToast('File Word creato');
+        } catch (error) { showToast('Non è stato possibile creare il file Word'); }
+      }
+      $('#downloadWord').addEventListener('click', downloadWordSummary);
 
       // Fotocamera: la stessa funzione alimenta riassunti, traduzioni ed esercizi.
       const cameraModal = $('#cameraModal'); const video = $('#cameraVideo');
@@ -869,7 +903,7 @@
         speechSynthesis.speak(utterance);
       }
       $('#voiceVolume').addEventListener('input', event => setVoiceVolume(event.target.value));
-      $('#summarySpeak').dataset.speak = $('#summaryText').textContent;
+      showSummary(summarySourceTitle, summarySourceText, 0);
 
       $$('[data-setting]').forEach(btn => btn.addEventListener('click', () => { const type = btn.dataset.setting; if (type === 'sound') setSound(!soundsOn); if (type === 'voice') setVoice(!voiceOn); if (type === 'local') { btn.classList.toggle('on'); showToast(btn.classList.contains('on') ? 'Salvataggio locale attivo' : 'Salvataggio locale disattivato'); } softClick(); }));
       if ('serviceWorker' in navigator) { window.addEventListener('load', () => navigator.serviceWorker.register('./service-worker.js').catch(() => {})); }
